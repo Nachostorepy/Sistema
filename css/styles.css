@@ -1,0 +1,201 @@
+/* Variables CSS */
+:root {
+    --primary-color: #007bff;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --dark-color: #343a40;
+    --light-color: #f8f9fa;
+}
+
+/* Estilos generales */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos del login */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.login-header {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Estilos de tarjetas */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    margin-bottom: 1rem;
+}
+
+/* Estilos de animaciones */
+.seccion {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos específicos para componentes */
+.user-info {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.user-info-visitante {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+/* Colores de sucursales */
+.sucursal-cc { border-left: 4px solid #007bff; }
+.sucursal-cde { border-left: 4px solid #28a745; }
+.sucursal-co { border-left: 4px solid #6f42c1; }
+.sucursal-ea { border-left: 4px solid #fd7e14; }
+.sucursal-enc { border-left: 4px solid #e83e8c; }
+.sucursal-lmp { border-left: 4px solid #20c997; }
+.sucursal-lq { border-left: 4px solid #ffc107; }
+.sucursal-sl { border-left: 4px solid #dc3545; }
+
+.badge-cc { background-color: #007bff; }
+.badge-cde { background-color: #28a745; }
+.badge-co { background-color: #6f42c1; }
+.badge-ea { background-color: #fd7e14; }
+.badge-enc { background-color: #e83e8c; }
+.badge-lmp { background-color: #20c997; }
+.badge-lq { background-color: #ffc107; color: #000; }
+.badge-sl { background-color: #dc3545; }
+
+/* Estilos para vacaciones */
+.vacaciones-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.antiguedad-badge {
+    font-size: 0.8em;
+    padding: 4px 8px;
+}
+
+/* Notificaciones */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-item {
+    border-left: 4px solid #007bff;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.notification-warning {
+    border-left-color: #ffc107;
+    background: #fff3cd;
+}
+
+.notification-success {
+    border-left-color: #28a745;
+    background: #d4edda;
+}
+
+.notification-danger {
+    border-left-color: #dc3545;
+    background: #f8d7da;
+}
+
+/* Filtros y organización */
+.filtro-sucursal {
+    margin-bottom: 1rem;
+}
+
+.grupo-sucursal {
+    margin-bottom: 2rem;
+}
+
+.header-sucursal {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid;
+}
+
+.header-cc { border-left-color: #007bff; }
+.header-cde { border-left-color: #28a745; }
+.header-co { border-left-color: #6f42c1; }
+.header-ea { border-left-color: #fd7e14; }
+.header-enc { border-left-color: #e83e8c; }
+.header-lmp { border-left-color: #20c997; }
+.header-lq { border-left-color: #ffc107; }
+.header-sl { border-left-color: #dc3545; }
+
+/* Estilos para elementos deshabilitados para visitantes */
+.disabled-for-visitor {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Estilos para resaltar totales en reportes */
+.total-row {
+    background-color: #e9ecef !important;
+    font-weight: bold;
+}
+
+.total-sucursal {
+    background-color: #d1ecf1 !important;
+    font-weight: bold;
+}
+
+/* Dashboard stats */
+.dashboard-stats .card-body {
+    padding: 1.25rem;
+}
+
+.dashboard-stats h4 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-stats p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
