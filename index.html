@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de RRHH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="card login-card">
+            <div class="login-header">
+                <h2><i class="fas fa-users me-2"></i>Sistema RRHH</h2>
+                <p class="mb-0">Base de datos Supabase</p>
+            </div>
+            <div class="card-body p-4">
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" placeholder="Ingrese su usuario" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2">
+                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main System -->
+    <div id="main-system" class="d-none">
+        <div class="container-fluid">
+            <header class="bg-primary text-white p-3 mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h1 class="mb-1"><i class="fas fa-users me-2"></i>Sistema RRHH</h1>
+                        <small>Conectado a Supabase - Base de datos en la nube</small>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                        <div class="d-flex flex-column flex-md-row align-items-center justify-content-md-end gap-2">
+                            <div id="user-info-container" class="user-info">
+                                <i class="fas fa-user me-1"></i>
+                                <span id="current-user">Admin</span>
+                                <span id="user-role" class="badge bg-light text-dark ms-1">Administrador</span>
+                            </div>
+                            <span id="fecha-actual" class="lead"></span>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-light btn-sm position-relative" onclick="mostrarSeccion('notificaciones')">
+                                    <i class="fas fa-bell"></i>
+                                    <span id="notification-counter" class="notification-badge d-none">0</span>
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" onclick="cerrarSesion()">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Salir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav w-100 justify-content-around">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" onclick="mostrarSeccion('dashboard')">
+                                    <i class="fas fa-tachometer-alt me-1"></i><span class="d-none d-md-inline">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('empleados')">
+                                    <i class="fas fa-user-tie me-1"></i><span class="d-none d-md-inline">Empleados</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" id="nav-agregar-empleado">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('agregar-empleado')">
+                                    <i class="fas fa-user-plus me-1"></i><span class="d-none d-md-inline">Agregar</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('vacaciones')">
+                                    <i class="fas fa-umbrella-beach me-1"></i><span class="d-none d-md-inline">Vacaciones</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('sucursales')">
+                                    <i class="fas fa-building me-1"></i><span class="d-none d-md-inline">Sucursales</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('reportes')">
+                                    <i class="fas fa-chart-bar me-1"></i><span class="d-none d-md-inline">Reportes</span>
+                                </a>
+                            </li>
+                            <li class="nav-item" id="nav-gestion-usuarios">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('gestion-usuarios')">
+                                    <i class="fas fa-users-cog me-1"></i><span class="d-none d-md-inline">Usuarios</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="mostrarSeccion('notificaciones')">
+                                    <i class="fas fa-bell me-1"></i><span class="d-none d-md-inline">Notificaciones</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Secciones -->
+            <div id="secciones">
+                <!-- Dashboard -->
+                <div id="dashboard" class="seccion">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4 dashboard-stats">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card text-white bg-primary h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="total-empleados">0</h4>
+                                            <p class="mb-0">Total Empleados</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-users fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card text-white bg-success h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="vacaciones-pendientes">0</h4>
+                                            <p class="mb-0">Días Vac. Pendientes</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-umbrella-beach fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card text-white bg-warning h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="salario-total">$0</h4>
+                                            <p class="mb-0">Nómina Total</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-dollar-sign fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card text-white bg-info h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4 id="antiguedad-promedio">0</h4>
+                                            <p class="mb-0">Antigüedad Promedio</p>
+                                        </div>
+                                        <div class="align-self-center">
+                                            <i class="fas fa-calendar-alt fa-2x"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-clock me-2"></i>Empleados Recientes
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="lista-empleados-recientes">
+                                        <p class="text-muted">Cargando desde Supabase...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-bell me-2"></i>Alertas Recientes
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="alertas-recientes">
+                                        <p class="text-muted">Cargando alertas...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista de Empleados -->
+                <div id="empleados" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-user-tie me-2"></i>Lista de Empleados</h2>
+                            
+                            <!-- Filtro por Sucursal -->
+                            <div class="card filtro-sucursal">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="filtro-sucursal" class="form-label">Filtrar por Sucursal:</label>
+                                            <select class="form-select" id="filtro-sucursal" onchange="filtrarEmpleadosPorSucursal()">
+                                                <option value="todas">Todas las Sucursales</option>
+                                                <option value="CC">CC</option>
+                                                <option value="CDE">CDE</option>
+                                                <option value="CO">CO</option>
+                                                <option value="EA">EA</option>
+                                                <option value="ENC">ENC</option>
+                                                <option value="LMP">LMP</option>
+                                                <option value="LQ">LQ</option>
+                                                <option value="SL">SL</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="agrupar-sucursal" onchange="alternarAgrupacionSucursal()">
+                                                <label class="form-check-label" for="agrupar-sucursal">
+                                                    Agrupar por Sucursal
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="contenedor-empleados">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-mobile-friendly">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Nombre</th>
+                                                        <th>Sucursal</th>
+                                                        <th>Puesto</th>
+                                                        <th>Antigüedad</th>
+                                                        <th>Vac. Pendientes</th>
+                                                        <th>Salario</th>
+                                                        <th id="th-acciones">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabla-empleados">
+                                                    <tr>
+                                                        <td colspan="8" class="text-center text-muted">
+                                                            Cargando desde Supabase...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agregar Empleado -->
+                <div id="agregar-empleado" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-user-plus me-2"></i>Agregar Nuevo Empleado</h2>
+                            <div class="card">
+                                <div class="card-body">
+                                    <form id="form-agregar-empleado">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="id_empleado" class="form-label">ID Empleado *</label>
+                                                    <input type="text" class="form-control" id="id_empleado" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="nombre" class="form-label">Nombre *</label>
+                                                    <input type="text" class="form-control" id="nombre" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="apellido" class="form-label">Apellido *</label>
+                                                    <input type="text" class="form-control" id="apellido" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="fecha_contratacion" class="form-label">Fecha de Contratación *</label>
+                                                    <input type="date" class="form-control" id="fecha_contratacion" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="salario_base" class="form-label">Salario Base *</label>
+                                                    <input type="number" step="0.01" class="form-control" id="salario_base" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="puesto" class="form-label">Puesto *</label>
+                                                    <input type="text" class="form-control" id="puesto" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="sucursal" class="form-label">Sucursal *</label>
+                                                    <select class="form-select" id="sucursal" required>
+                                                        <option value="">Seleccionar...</option>
+                                                        <option value="CC">CC</option>
+                                                        <option value="CDE">CDE</option>
+                                                        <option value="CO">CO</option>
+                                                        <option value="EA">EA</option>
+                                                        <option value="ENC">ENC</option>
+                                                        <option value="LMP">LMP</option>
+                                                        <option value="LQ">LQ</option>
+                                                        <option value="SL">SL</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="departamento" class="form-label">Departamento</label>
+                                                    <input type="text" class="form-control" id="departamento">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="email">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="telefono" class="form-label">Teléfono</label>
+                                                    <input type="text" class="form-control" id="telefono">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-success btn-lg w-100 mb-2">
+                                                    <i class="fas fa-save me-2"></i>Guardar en Supabase
+                                                </button>
+                                                <button type="button" class="btn btn-secondary btn-lg w-100" onclick="mostrarSeccion('empleados')">
+                                                    <i class="fas fa-times me-2"></i>Cancelar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vacaciones -->
+                <div id="vacaciones" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-umbrella-beach me-2"></i>Gestión de Vacaciones</h2>
+                            
+                            <!-- Filtro por Sucursal para Vacaciones -->
+                            <div class="card filtro-sucursal">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="filtro-sucursal-vacaciones" class="form-label">Filtrar por Sucursal:</label>
+                                            <select class="form-select" id="filtro-sucursal-vacaciones" onchange="filtrarVacacionesPorSucursal()">
+                                                <option value="todas">Todas las Sucursales</option>
+                                                <option value="CC">CC</option>
+                                                <option value="CDE">CDE</option>
+                                                <option value="CO">CO</option>
+                                                <option value="EA">EA</option>
+                                                <option value="ENC">ENC</option>
+                                                <option value="LMP">LMP</option>
+                                                <option value="LQ">LQ</option>
+                                                <option value="SL">SL</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="agrupar-sucursal-vacaciones" onchange="alternarAgrupacionSucursalVacaciones()">
+                                                <label class="form-check-label" for="agrupar-sucursal-vacaciones">
+                                                    Agrupar por Sucursal
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <strong><i class="fas fa-info-circle me-2"></i>Política de Vacaciones:</strong><br>
+                                • 1 año de servicio: 12 días hábiles<br>
+                                • 5-10 años de servicio: 18 días hábiles<br>
+                                • Más de 10 años: 30 días hábiles
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="contenedor-vacaciones">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-hover table-mobile-friendly">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Empleado</th>
+                                                        <th>Sucursal</th>
+                                                        <th>Antigüedad</th>
+                                                        <th>Vac. Acumuladas</th>
+                                                        <th>Vac. Tomadas</th>
+                                                        <th>Vac. Pendientes</th>
+                                                        <th id="th-acciones-vacaciones">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabla-vacaciones">
+                                                    <tr>
+                                                        <td colspan="7" class="text-center text-muted">
+                                                            Cargando desde Supabase...
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sucursales -->
+                <div id="sucursales" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-building me-2"></i>Resumen por Sucursales</h2>
+                            <div class="row mb-4">
+                                <div class="col-6 col-md-3 mb-3">
+                                    <div class="card text-white bg-primary h-100">
+                                        <div class="card-body text-center">
+                                            <h3 id="total-sucursales">0</h3>
+                                            <p class="mb-0">Sucursales Activas</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <div class="card text-white bg-success h-100">
+                                        <div class="card-body text-center">
+                                            <h3 id="empleados-cc">0</h3>
+                                            <p class="mb-0">Empleados CC</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <div class="card text-white bg-warning h-100">
+                                        <div class="card-body text-center">
+                                            <h3 id="empleados-cde">0</h3>
+                                            <p class="mb-0">Empleados CDE</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <div class="card text-white bg-info h-100">
+                                        <div class="card-body text-center">
+                                            <h3 id="empleados-co">0</h3>
+                                            <p class="mb-0">Empleados CO</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row" id="resumen-sucursales">
+                                <!-- Se llena dinámicamente con JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reportes -->
+                <div id="reportes" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Reportes y Exportaciones</h2>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
+                                            <h5>Reporte General</h5>
+                                            <p class="text-muted">Lista completa de empleados organizada por sucursal</p>
+                                            <button class="btn btn-danger" onclick="generarReporteGeneral()">
+                                                <i class="fas fa-download me-2"></i>Descargar PDF
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-umbrella-beach fa-3x text-warning mb-3"></i>
+                                            <h5>Reporte de Vacaciones</h5>
+                                            <p class="text-muted">Estado de vacaciones organizado por sucursal</p>
+                                            <button class="btn btn-warning" onclick="generarReporteVacaciones()">
+                                                <i class="fas fa-download me-2"></i>Descargar PDF
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-building fa-3x text-primary mb-3"></i>
+                                            <h5>Reporte por Sucursal</h5>
+                                            <p class="text-muted">Reporte detallado organizado por sucursal</p>
+                                            <button class="btn btn-primary" onclick="generarReporteSucursales()">
+                                                <i class="fas fa-download me-2"></i>Descargar PDF
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-file-excel fa-3x text-success mb-3"></i>
+                                            <h5>Exportar a Excel</h5>
+                                            <p class="text-muted">Datos completos en formato Excel organizados por sucursal</p>
+                                            <button class="btn btn-success" onclick="exportarAExcel()">
+                                                <i class="fas fa-file-export me-2"></i>Exportar CSV
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-chart-pie fa-3x text-info mb-3"></i>
+                                            <h5>Estadísticas</h5>
+                                            <p class="text-muted">Métricas y análisis por sucursal</p>
+                                            <button class="btn btn-info" onclick="generarReporteEstadisticas()">
+                                                <i class="fas fa-chart-bar me-2"></i>Ver Reporte
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Usuarios -->
+                <div id="gestion-usuarios" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-users-cog me-2"></i>Gestión de Usuarios</h2>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-user-plus me-2"></i>Crear Nuevo Usuario
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="form-registro-usuario">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg_username" class="form-label">Usuario *</label>
+                                                    <input type="text" class="form-control" id="reg_username" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="reg_password" class="form-label">Contraseña *</label>
+                                                    <input type="password" class="form-control" id="reg_password" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="reg_nombre" class="form-label">Nombre Completo *</label>
+                                                    <input type="text" class="form-control" id="reg_nombre" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="reg_email" class="form-label">Email</label>
+                                                    <input type="email" class="form-control" id="reg_email">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="reg_rol" class="form-label">Tipo de Usuario *</label>
+                                                    <select class="form-select" id="reg_rol" required>
+                                                        <option value="visitante">Visitante</option>
+                                                        <option value="admin">Administrador</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Estado</label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="reg_activo" checked>
+                                                        <label class="form-check-label" for="reg_activo">
+                                                            Usuario Activo
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                                    <i class="fas fa-user-plus me-2"></i>Crear Usuario
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-users me-2"></i>Lista de Usuarios
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-mobile-friendly">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Usuario</th>
+                                                    <th>Nombre</th>
+                                                    <th>Email</th>
+                                                    <th>Rol</th>
+                                                    <th>Estado</th>
+                                                    <th>Último Login</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-usuarios">
+                                                <tr>
+                                                    <td colspan="7" class="text-center text-muted">
+                                                        Cargando usuarios...
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notificaciones -->
+                <div id="notificaciones" class="seccion d-none">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="mb-4"><i class="fas fa-bell me-2"></i>Sistema de Notificaciones</h2>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-umbrella-beach fa-3x text-warning mb-3"></i>
+                                            <h5>Vacaciones Próximas</h5>
+                                            <p id="contador-vacaciones-proximas" class="h4 text-warning">0</p>
+                                            <small>Empleados con vacaciones próximas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-birthday-cake fa-3x text-success mb-3"></i>
+                                            <h5>Cumpleaños</h5>
+                                            <p id="contador-cumpleanos" class="h4 text-success">0</p>
+                                            <small>Cumpleaños este mes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-calendar-alt fa-3x text-info mb-3"></i>
+                                            <h5>Aniversarios</h5>
+                                            <p id="contador-aniversarios" class="h4 text-info">0</p>
+                                            <small>Aniversarios este mes</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-list me-2"></i>Alertas y Recordatorios
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="lista-notificaciones">
+                                        <p class="text-muted">Cargando notificaciones...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Vacaciones -->
+    <div class="modal fade" id="modalVacaciones" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Vacaciones</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-vacaciones">
+                        <input type="hidden" id="empleado_vacaciones_id">
+                        <div class="mb-3">
+                            <label for="dias_vacaciones" class="form-label">Días hábiles a tomar:</label>
+                            <input type="number" class="form-control" id="dias_vacaciones" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Información del Empleado:</label>
+                            <div class="alert alert-info">
+                                <strong id="info-empleado"></strong><br>
+                                Sucursal: <span id="info-sucursal" class="badge"></span><br>
+                                Antigüedad: <span id="info-antiguedad" class="badge bg-primary"></span><br>
+                                Vacaciones acumuladas: <span id="info-vacaciones-acumuladas" class="badge bg-info"></span><br>
+                                Vacaciones pendientes: <span id="info-vacaciones-pendientes" class="badge bg-success"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="registrarVacaciones()">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Empleado -->
+    <div class="modal fade" id="modalEditarEmpleado" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Empleado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-editar-empleado">
+                        <input type="hidden" id="edit_empleado_id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_id_empleado" class="form-label">ID Empleado *</label>
+                                    <input type="text" class="form-control" id="edit_id_empleado" readonly>
+                                    <small class="text-muted">El ID no se puede modificar</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_nombre" class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" id="edit_nombre" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_apellido" class="form-label">Apellido *</label>
+                                    <input type="text" class="form-control" id="edit_apellido" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_fecha_contratacion" class="form-label">Fecha de Contratación *</label>
+                                    <input type="date" class="form-control" id="edit_fecha_contratacion" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_salario_base" class="form-label">Salario Base *</label>
+                                    <input type="number" step="0.01" class="form-control" id="edit_salario_base" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_puesto" class="form-label">Puesto *</label>
+                                    <input type="text" class="form-control" id="edit_puesto" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_sucursal" class="form-label">Sucursal *</label>
+                                    <select class="form-select" id="edit_sucursal" required>
+                                        <option value="">Seleccionar...</option>
+                                        <option value="CC">CC</option>
+                                        <option value="CDE">CDE</option>
+                                        <option value="CO">CO</option>
+                                        <option value="EA">EA</option>
+                                        <option value="ENC">ENC</option>
+                                        <option value="LMP">LMP</option>
+                                        <option value="LQ">LQ</option>
+                                        <option value="SL">SL</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="edit_departamento" class="form-label">Departamento</label>
+                                    <input type="text" class="form-control" id="edit_departamento">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="edit_email">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="edit_telefono" class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control" id="edit_telefono">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Sección de Vacaciones -->
+                        <div class="vacaciones-info">
+                            <h6><i class="fas fa-umbrella-beach me-2"></i>Control de Vacaciones</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="edit_dias_vacaciones_tomados" class="form-label text-white">Días Tomados *</label>
+                                        <input type="number" class="form-control" id="edit_dias_vacaciones_tomados" min="0" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label class="form-label text-white">Resumen de Vacaciones</label>
+                                        <div class="text-white">
+                                            <div>Antigüedad: <strong id="edit_antiguedad_info">0 años</strong></div>
+                                            <div>Rango: <strong id="edit_rango_antiguedad">-</strong></div>
+                                            <div>Vacaciones acumuladas: <strong id="edit_vacaciones_acumuladas">0 días</strong></div>
+                                            <div>Vacaciones pendientes: <strong id="edit_vacaciones_pendientes">0 días</strong></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarEdicionEmpleado()">
+                        <i class="fas fa-save me-1"></i>Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Usuario -->
+    <div class="modal fade" id="modalEditarUsuario" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Usuario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-editar-usuario">
+                        <input type="hidden" id="edit_usuario_id">
+                        <div class="mb-3">
+                            <label for="edit_username" class="form-label">Usuario *</label>
+                            <input type="text" class="form-control" id="edit_username" readonly>
+                            <small class="text-muted">El nombre de usuario no se puede modificar</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_nombre_usuario" class="form-label">Nombre Completo *</label>
+                            <input type="text" class="form-control" id="edit_nombre_usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_email_usuario" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email_usuario">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_rol_usuario" class="form-label">Rol *</label>
+                            <select class="form-select" id="edit_rol_usuario" required>
+                                <option value="visitante">Visitante</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="edit_activo_usuario">
+                                <label class="form-check-label" for="edit_activo_usuario">
+                                    Usuario Activo
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_password_usuario" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="edit_password_usuario" placeholder="Dejar vacío para mantener la actual">
+                            <small class="text-muted">Solo completar si desea cambiar la contraseña</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarEdicionUsuario()">
+                        <i class="fas fa-save me-1"></i>Guardar Cambios
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script src="js/supabase-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/empleados.js"></script>
+    <script src="js/usuarios.js"></script>
+    <script src="js/vacaciones.js"></script>
+    <script src="js/reportes.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
